@@ -1,0 +1,25 @@
+{
+  "name": "11-flixx-movie-app",
+  "version": "1.0.0",
+  "description": "Movie info application built with vanilla JavaScript that uses **version 3** of the [TMDB API](https://developers.themoviedb.org/3)",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chris-2811/flixx-movie-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Chris-2811/flixx-movie-app/issues"
+  },
+  "homepage": "https://github.com/Chris-2811/flixx-movie-app#readme",
+  "dependencies": {
+    "swiper": "^9.3.2"
+  }
+}
