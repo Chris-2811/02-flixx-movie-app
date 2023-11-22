@@ -9,18 +9,18 @@ const global = {
   },
 };
 
-// Display 20 most poplular movie
+// Display 20 most popular movies
 async function displayPopularMovies() {
-  const { results } = await fetchAPIData('movie/popular');
+  const data = await fetchAPIData('movie/popular');
+  const movies = data.results;
 
-  console.log(results);
-
-  results.forEach((movie) => {
+  movies.forEach((movie) => {
     const div = document.createElement('div');
     div.classList.add('card');
     div.setAttribute('data-id', movie.id);
+
     div.innerHTML = `
-    <a href="movie-details.html?id=${movie.id}">
+      <a href="movie-details.html?id=${movie.id}">
             ${
               movie.poster_path
                 ? `<img
@@ -43,21 +43,20 @@ async function displayPopularMovies() {
             </p>
           </div>
           `;
+
     document.getElementById('popular-movies').appendChild(div);
   });
 }
 
-// Display Movie Details
+// Display Movies details
 async function displayMovieDetails() {
   const id = window.location.search.split('=')[1];
-
   const movie = await fetchAPIData(`movie/${id}`);
 
   displayBackgroundImage('movie', movie.backdrop_path);
 
   const div = document.createElement('div');
-  div.innerHTML = `
-  <div class="details-top">
+  div.innerHTML = ` <div class="details-top">
   <div>
   ${
     movie.poster_path
@@ -112,88 +111,57 @@ async function displayMovieDetails() {
       .map((company) => `<span>${company.name}</span>`)
       .join(', ')}
   </div>
-</div>
-  `;
+</div>`;
 
-  document.querySelector('#movie-details').appendChild(div);
+  document.getElementById('movie-details').appendChild(div);
 }
 
-// Add commas to number
-function addCommasToNumber(number) {
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-
-// Display background image
-function displayBackgroundImage(type, backgroundPath) {
-  const overlayDiv = document.createElement('div');
-
-  overlayDiv.style.backgroundImage = `url(https://image.tmdb.org/t/p/original/${backgroundPath})`;
-  overlayDiv.style.backgroundRepeat = 'no-repeat';
-  overlayDiv.style.backgroundSize = 'cover';
-  overlayDiv.style.backgroundPosition = 'center';
-  overlayDiv.style.position = 'absolute';
-  overlayDiv.style.top = '0';
-  overlayDiv.style.left = '0';
-  overlayDiv.style.width = '100vw';
-  overlayDiv.style.height = '100vh';
-  overlayDiv.style.opacity = '0.2';
-  overlayDiv.style.zIndex = '-1';
-
-  if (type === 'movie') {
-    document.querySelector('#movie-details').appendChild(overlayDiv);
-  } else {
-    document.querySelector('#show-details').appendChild(overlayDiv);
-  }
-}
-
-// Display 20 most popular tv-shows
+// Display 20 most popular shows
 async function displayPopularShows() {
-  const { results } = await fetchAPIData('tv/popular');
+  const data = await fetchAPIData('tv/popular');
+  const shows = data.results;
 
-  console.log(results);
-
-  results.forEach((show) => {
+  shows.forEach((show) => {
     const div = document.createElement('div');
     div.classList.add('card');
     div.setAttribute('data-id', show.id);
-    div.innerHTML = `
-      <a href="tv-details.html?=${show.id}">
-        ${
-          show.poster_path
-            ? `<img
-          src="https://image.tmdb.org/t/p/w500${show.poster_path}"
-          class="card-img-top"
-          alt="${show.name}"
-        />`
-            : `<img
-            src="../images/no-image.jpg"
-            class="card-img-top"
-            alt="${show.name}"
-          />`
-        }
-      </a>
-      <div class="card-body">
-        <h5 class="card-title">${show.name}</h5>
-        <p class="card-text">
-        <small class="text-muted">Air Date: ${show.first_air_date}</small>
-        </p>
-      </div>
-    `;
+
+    div.innerHTML = `<a href="tv-details.html?=${show.id}">
+    ${
+      show.poster_path
+        ? `<img
+      src="https://image.tmdb.org/t/p/w500${show.poster_path}"
+      class="card-img-top"
+      alt="${show.name}"
+    />`
+        : `<img
+        src="../images/no-image.jpg"
+        class="card-img-top"
+        alt="${show.name}"
+      />`
+    }
+  </a>
+  <div class="card-body">
+    <h5 class="card-title">${show.name}</h5>
+    <p class="card-text">
+    <small class="text-muted">Air Date: ${show.first_air_date}</small>
+    </p>
+  </div>`;
 
     document.getElementById('popular-shows').appendChild(div);
   });
 }
 
-// Display tv-show details
+// Display show details
 async function displayShowDetails() {
   const id = window.location.search.split('=')[1];
   const show = await fetchAPIData(`tv/${id}`);
 
-  displayBackgroundImage('tv', show.backdrop_path);
+  displayBackgroundImage('show', show.backdrop_path);
 
   const div = document.createElement('div');
   div.innerHTML = `
-<div class="details-top">
+  <div class="details-top">
   <div>
   ${
     show.poster_path
@@ -248,30 +216,10 @@ async function displayShowDetails() {
 </div>
   `;
 
-  const footer = document.getElementById('footer');
-  footer.style.marginTop = '50px';
-
   document.getElementById('show-details').appendChild(div);
 }
 
-// Fetch data from API
-async function fetchAPIData(endpoint) {
-  const API_URL = 'https://api.themoviedb.org/3/';
-  const API_KEY = '05e1c39526cfcad16d30aae45602a17f';
-
-  showSpinner();
-
-  const response = await fetch(
-    `${API_URL}${endpoint}?api_key=${API_KEY}&language=en-US`
-  );
-  const data = await response.json();
-
-  hideSpinner();
-
-  return data;
-}
-
-// Display search results
+// Display Search Results()
 function displaySearchResults(results) {
   document.getElementById('search-results-heading').innerHTML = '';
   document.getElementById('search-results').innerHTML = '';
@@ -308,40 +256,33 @@ function displaySearchResults(results) {
         }</small>
       </p>
     </div>
-  `;
-    document.getElementById('search-results-heading').innerHTML = `
-    <h2>${results.length} of ${global.search.totalResults} Results for ${global.search.term}</h2>
     `;
+
     document.getElementById('search-results').appendChild(div);
   });
+
+  document.getElementById('search-results-heading').innerHTML = `
+    <h2>${results.length} of ${global.search.totalResults} Results for ${global.search.term}</h2>
+  `;
 
   displayPagination();
 }
 
-// Display pagination
+// Display Pagination
 function displayPagination() {
   const div = document.createElement('div');
   div.classList.add('pagination');
   div.innerHTML = `
   <button class="btn btn-primary" id="prev">Prev</button>
   <button class="btn btn-primary" id="next">Next</button>
-  <div class="page-counter">Page ${global.search.page} of ${global.search.totalPages}</div>
+  <div class="page-counter">${global.search.page} of ${global.search.totalPages}</div>
   `;
 
   document.getElementById('pagination').appendChild(div);
 
-  // Set buttons to disabled
-  if (global.search.page <= 1) {
-    document.getElementById('prev').disabled = true;
-  }
-
-  if (global.search.page === global.search.totalPages) {
-    document.getElementById('next').disables = true;
-  }
-
-  // Change the current page
   document.getElementById('next').addEventListener('click', async (e) => {
     global.search.page++;
+
     const { results } = await searchAPIData();
     displaySearchResults(results);
     window.scrollTo(0, 0);
@@ -349,100 +290,156 @@ function displayPagination() {
 
   document.getElementById('prev').addEventListener('click', async (e) => {
     global.search.page--;
+
     const { results } = await searchAPIData();
     displaySearchResults(results);
     window.scrollTo(0, 0);
   });
-}
 
-// search functionality
-async function search() {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-
-  console.log(queryString);
-  console.log(urlParams);
-
-  global.search.term = urlParams.get('search-term');
-  global.search.type = urlParams.get('type');
-
-  if (global.search.term !== '' || global.search.term !== null) {
-    const { results, page, total_pages, total_results } = await searchAPIData();
-
-    console.log(page);
-
-    global.search.page = page;
-    global.search.totalPages = total_pages;
-    global.search.totalResults = total_results;
-
-    displaySearchResults(results);
-  } else {
-    showAlert('Please enter a search term');
+  if (global.search.page <= 1) {
+    document.getElementById('prev').disabled = true;
+  }
+  if (global.search.page === global.search.totalPages) {
+    document.getElementById('next').disabled = true;
   }
 }
 
-// Show Alert
+// Search functionality
+async function search() {
+  const params = new URLSearchParams(window.location.search);
+
+  const type = params.get('type');
+  const term = params.get('search-term');
+
+  global.search.term = term;
+  global.search.type = type;
+
+  if (global.search.term === '' || global.search.term === null) {
+    showAlert('Please enter a search term');
+  }
+
+  const { results, page, total_pages, total_results } = await searchAPIData();
+
+  global.search.page = page;
+  global.search.totalPages = total_pages;
+  global.search.totalResults = total_results;
+
+  console.log(global.search.totalPages);
+
+  displaySearchResults(results);
+}
+
+// Show alert
 function showAlert(message, className = 'error') {
   const alertEl = document.createElement('div');
   alertEl.classList.add('alert', className);
   alertEl.appendChild(document.createTextNode(message));
-  document.querySelector('#alert').appendChild(alertEl);
+  document.getElementById('alert').appendChild(alertEl);
 
-  setTimeout(() => alertEl.remove(), 3000);
+  setTimeout(() => {
+    alertEl.remove();
+  }, 3000);
 }
 
-// Fetch search API data
-async function searchAPIData() {
-  const API_URL = 'https://api.themoviedb.org/3/';
+// Fetch data from api
+async function fetchAPIData(endpoint) {
   const API_KEY = '05e1c39526cfcad16d30aae45602a17f';
+  const API_URL = 'https://api.themoviedb.org/3/';
 
-  showSpinner();
+  displaySpinner();
 
-  const response = await fetch(
-    `${API_URL}search/${global.search.type}?api_key=${API_KEY}&language=en-US&query=${global.search.term}&page=${global.search.page}`
-  );
+  const response = await fetch(`${API_URL}${endpoint}?api_key=${API_KEY}`);
   const data = response.json();
 
-  hideSpinner();
+  removeSpinner();
 
   return data;
 }
 
-// Show and remove Spinner
-function showSpinner() {
-  document.querySelector('.spinner').classList.add('show');
+// Search api data
+async function searchAPIData() {
+  const API_KEY = '05e1c39526cfcad16d30aae45602a17f';
+  const API_URL = 'https://api.themoviedb.org/3/';
+
+  displaySpinner();
+
+  const response = await fetch(
+    `${API_URL}search/${global.search.type}?api_key=${API_KEY}&query=${global.search.term}&page=${global.search.page}`
+  );
+
+  const data = response.json();
+
+  removeSpinner();
+
+  return data;
 }
 
-function hideSpinner() {
-  document.querySelector('.spinner').classList.remove('show');
+// Display background image
+function displayBackgroundImage(type, path) {
+  const overlayDiv = document.createElement('div');
+  overlayDiv.style.backgroundImage = `url(https://image.tmdb.org/t/p/original${path})`;
+  overlayDiv.style.backgroundRepeat = 'no-repeat';
+  overlayDiv.style.backgroundSize = 'cover';
+  overlayDiv.style.backgroundPosition = 'center';
+  overlayDiv.style.position = 'absolute';
+  overlayDiv.style.top = '0';
+  overlayDiv.style.left = '0';
+  overlayDiv.style.width = '100%';
+  overlayDiv.style.height = '100%';
+  overlayDiv.style.opacity = '0.2';
+  overlayDiv.style.zIndex = '-1';
+
+  if (type === 'movie') {
+    document.getElementById('movie-details').appendChild(overlayDiv);
+  } else {
+    document.getElementById('show-details').appendChild(overlayDiv);
+  }
 }
 
-// Init Swiper
+// Add commas to number
+function addCommasToNumber(number) {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+// Highlight active link
+function highlightActiveLink() {
+  const links = document.querySelectorAll('.nav-link');
+
+  links.forEach((link) => {
+    if (link.getAttribute('href') === global.currentPath) {
+      link.classList.add('active');
+    }
+  });
+}
+
 function initSwiper() {
   const swiper = new Swiper('.swiper', {
     slidesPerView: 1,
+    slidesPerGroup: 1,
     spaceBetween: 30,
-    freeMode: true,
+    freemode: false,
     loop: true,
     autoplay: {
       delay: 4000,
-      disableOnInteraction: false,
     },
     breakpoints: {
       500: {
         slidesPerView: 2,
+        slidesPerGroup: 1,
       },
       700: {
         slidesPerView: 3,
+        slidesPerGroup: 1,
       },
       1200: {
         slidesPerView: 4,
+        slidesPerGroup: 1,
       },
     },
   });
 }
 
-// Display swiper
+// Display Swiper
 async function displaySwiper() {
   const { results } = await fetchAPIData('movie/now_playing');
 
@@ -451,35 +448,38 @@ async function displaySwiper() {
     div.classList.add('swiper-slide');
     div.innerHTML = `
     <a href="movie-details.html?id=${movie.id}">
-    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" />
-  </a>
-  <h4 class="swiper-rating">
-    <i class="fas fa-star text-secondary"></i> ${movie.vote_average} / 10
-  </h4>
+      <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" />
+    </a>
+    <h4 class="swiper-rating">
+      <i class="fas fa-star text-secondary"></i> ${movie.vote_average} / 10
+    </h4>
     `;
 
     document.querySelector('.swiper-wrapper').appendChild(div);
-
     initSwiper();
   });
 }
 
-// Show active link
-function showActiveLink() {
-  const links = document.querySelectorAll('.nav-link');
-  links.forEach((link) => {
-    if (link.getAttribute('href') === global.currentPath) {
-      link.className = 'active';
-    }
-  });
+// Display Spinner
+function displaySpinner() {
+  document.querySelector('.spinner').classList.add('show');
 }
 
+// Remove Spinner
+function removeSpinner() {
+  document.querySelector('.spinner').classList.remove('show');
+}
+
+// Router
 function init() {
   switch (global.currentPath) {
     case '/':
     case '/index.html':
       displayPopularMovies();
       displaySwiper();
+      break;
+    case '/shows.html':
+      displayPopularShows();
       break;
     case '/movie-details.html':
       displayMovieDetails();
@@ -489,13 +489,9 @@ function init() {
       break;
     case '/search.html':
       search();
-      break;
-    case '/shows.html':
-      displayPopularShows();
-      break;
   }
 
-  showActiveLink();
+  highlightActiveLink();
 }
 
-init();
+window.addEventListener('DOMContentLoaded', init);

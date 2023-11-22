@@ -148,6 +148,13 @@ ul {
   margin-top: 20px;
 }
 
+.main-footer.details {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
 .main-footer .container {
   display: flex;
   justify-content: space-between;
@@ -194,7 +201,6 @@ section h2 {
   height: 50%;
 }
 
-
 .swiper-slide {
   text-align: center;
   font-size: 18px;
@@ -206,7 +212,6 @@ section h2 {
   border-radius: 10px;
   overflow: hidden;
 }
-
 
 .swiper-slide img {
   display: block;
@@ -251,9 +256,6 @@ section h2 {
   margin-top: 20px;
 }
 
-.details-bottom {
-}
-
 .details-bottom li {
   margin: 15px 0;
   padding-bottom: 8px;
@@ -272,6 +274,7 @@ section h2 {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  position: relative;
 }
 
 .search .container h2 {
@@ -341,6 +344,9 @@ section h2 {
 
 /* Alert */
 .alert {
+  position: absolute;
+  bottom: 50%;
+  left: 54.5%;
   padding: 10px 20px;
   margin-bottom: 20px;
   border-radius: 5px;

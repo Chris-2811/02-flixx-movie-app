@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/spinner.css" />
     <script src="lib/swiper.js"></script>
-    <script src="js/script.js" defer></script>
+    <script src="js/script.js" defer type="module"></script>
     <title>Flixx</title>
   </head>
   <body>
@@ -50,7 +50,7 @@
     <section class="search">
       <div class="container">
         <div id="alert"></div>
-        <form action="/search.html" class="search-form">
+        <form action="search.html" class="search-form" onsubmit="search(event)">
           <!-- movies and shows radio box -->
           <div class="search-radio">
             <input type="radio" id="movie" name="type" value="movie" checked />
